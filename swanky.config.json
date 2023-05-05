@@ -19,8 +19,8 @@
     }
   ],
   "contracts": {
-    "nft": {
-      "name": "nft",
+    "Nft": {
+      "name": "Nft",
       "deployments": [],
       "language": "ink"
     }

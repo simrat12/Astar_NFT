@@ -2,7 +2,7 @@
 #![feature(min_specialization)]
 
 #[openbrush::contract]
-pub mod nft {
+pub mod Nft {
     use ink::codegen::{
         EmitEvent,
         Env,
