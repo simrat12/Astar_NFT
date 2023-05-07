@@ -23,7 +23,7 @@ use ink::prelude::string::{
     String as PreludeString,
     ToString,
 };
-use ink::prelude::vec::Vec;
+
 
 use crate::impls::payable_mint::types::{
     Data,
@@ -67,31 +67,23 @@ where
         + Storage<ownable::Data>
         + Storage<metadata::Data>
         + psp34::extensions::metadata::PSP34Metadata
-        + psp34::Internal,
+        + psp34::Internal
+        + psp34::PSP34, 
 {
     /// Mint one or more tokens
     #[modifiers(non_reentrant)]
-    default fn mint(&mut self, to: AccountId, mint_amount: u64, hps: Vec<u64>) -> Result<(), PSP34Error> {
+    default fn mint(&mut self, to: AccountId, mint_amount: u64) -> Result<(), PSP34Error> {
         self.check_amount(mint_amount)?;
         self.check_value(Self::env().transferred_value(), mint_amount)?;
 
         let next_to_mint = self.data::<Data>().last_token_id + 1; // first mint id is 1
         let mint_offset = next_to_mint + mint_amount;
 
-        if mint_amount != hps.len().try_into().unwrap() {
-            return Err(PSP34Error::NotApproved);
-        }
-
         for mint_id in next_to_mint..mint_offset {
             self.data::<psp34::Data<enumerable::Balances>>()
                 ._mint_to(to, Id::U64(mint_id))?;
             self.data::<Data>().last_token_id += 1;
-            let current_tuples = &mut self.data::<Data>().hp;
-            let mint_id_usize = mint_id as usize;
-            let new_tuple = (mint_id, hps[mint_id_usize - 1]);
-            current_tuples.push(new_tuple);
-            let new_complete_tuple: Vec<(u64, u64)> = current_tuples.to_vec();
-            self.data::<Data>().hp = new_complete_tuple;
+            self.data::<Data>().hp.insert(mint_id, &100); //need to use sometine random, DIA oracles
         }
 
         Ok(())
@@ -163,6 +155,19 @@ where
         Ok(token_uri)
     }
 
+    default fn attack(&self, nft1_id: u64, nft2_id: u64) -> Option<AccountId> {
+        let hp1 = self.hp(nft1_id);
+        let hp2 = self.hp(nft2_id);
+
+        if hp1 > hp2 {
+            Some(self.owner_of(Id::U64(nft1_id)).unwrap_or(AccountId::from([0x00; 32])))
+        } else if hp2 > hp1 {
+            Some(self.owner_of(Id::U64(nft2_id)).unwrap_or(AccountId::from([0x00; 32])))
+        } else {
+            None
+        }
+    }
+
     /// Get max supply of tokens
     default fn max_supply(&self) -> u64 {
         self.data::<Data>().max_supply
@@ -178,15 +183,17 @@ where
         self.data::<Data>().max_amount
     }
 
-    default fn hp(&self) -> Vec<(u64, u64)> {
-        self.data::<Data>().hp.clone()
+    default fn hp(&self, token_id: u64) -> Option<u64> {
+        self.data::<Data>().hp.get(token_id)
     }
 }
 
 /// Helper trait for PayableMint
 impl<T> Internal for T
 where
-    T: Storage<Data> + Storage<psp34::Data<enumerable::Balances>>,
+    T: Storage<Data>
+     + Storage<psp34::Data<enumerable::Balances>>
+     + psp34::PSP34,
 {
     /// Check if the transferred mint values is as expected
     default fn check_value(

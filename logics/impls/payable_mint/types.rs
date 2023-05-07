@@ -3,7 +3,7 @@ use openbrush::traits::{
     String,
 };
 pub const STORAGE_KEY: u32 = openbrush::storage_unique_key!(Data);
-use ink::prelude::vec::Vec;
+use ink::storage::Mapping;
 
 #[derive(Default, Debug)]
 #[openbrush::upgradeable_storage(STORAGE_KEY)]
@@ -13,7 +13,7 @@ pub struct Data {
     pub max_supply: u64,
     pub price_per_mint: Balance,
     pub max_amount: u64,
-    pub hp: Vec<(u64, u64)>,
+    pub hp: Mapping<u64, u64>,
 }
 
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]

@@ -20,9 +20,12 @@
   ],
   "contracts": {
     "Nft": {
-      "name": "Nft",
+      "name": "nft",
       "deployments": [],
-      "language": "ink"
+      "language": "ink",
+      "build": {
+        "artifactsPath": "/target/ink/"
+      }
     }
   },
   "networks": {
