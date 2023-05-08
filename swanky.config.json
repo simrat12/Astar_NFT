@@ -19,12 +19,13 @@
     }
   ],
   "contracts": {
-    "Nft": {
+    "nft": {
       "name": "nft",
       "deployments": [],
       "language": "ink",
       "build": {
-        "artifactsPath": "/target/ink/"
+        "timestamp": 1683582447322,
+        "artifactsPath": "artifacts/nft/1683582447322"
       }
     }
   },

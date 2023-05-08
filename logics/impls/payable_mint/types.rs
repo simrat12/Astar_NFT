@@ -11,7 +11,7 @@ pub struct Data {
     pub last_token_id: u64,
     pub collection_id: u32,
     pub max_supply: u64,
-    pub price_per_mint: Balance,
+    pub price_per_mint: Balance, //may need to change to u64, or change max_amount to type Balance
     pub max_amount: u64,
     pub hp: Mapping<u64, u64>,
 }

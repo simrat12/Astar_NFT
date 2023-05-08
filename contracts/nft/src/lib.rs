@@ -27,10 +27,10 @@ pub mod nft {
         traits::payable_mint::*,
     };
 
-    // NftContract contract storage
+    // nft_contract contract storage
     #[ink(storage)]
     #[derive(Default, Storage)]
-    pub struct NftContract {
+    pub struct nft_contract {
         #[storage_field]
         psp34: psp34::Data<enumerable::Balances>,
         #[storage_field]
@@ -43,10 +43,10 @@ pub mod nft {
         payable_mint: types::Data,
     }
 
-    impl PSP34 for NftContract {}
-    impl PSP34Enumerable for NftContract {}
-    impl PSP34Metadata for NftContract {}
-    impl Ownable for NftContract {}
+    impl PSP34 for nft_contract {}
+    impl PSP34Enumerable for nft_contract {}
+    impl PSP34Metadata for nft_contract {}
+    impl Ownable for nft_contract {}
 
     /// Event emitted when a token transfer occurs.
     #[ink(event)]
@@ -71,7 +71,7 @@ pub mod nft {
         approved: bool,
     }
 
-    impl NftContract {
+    impl nft_contract {
         #[ink(constructor)]
         pub fn new(
             name: String,
@@ -95,7 +95,7 @@ pub mod nft {
     }
 
     // Override event emission methods
-    impl psp34::Internal for NftContract {
+    impl psp34::Internal for nft_contract {
         fn _emit_transfer_event(&self, from: Option<AccountId>, to: Option<AccountId>, id: Id) {
             self.env().emit_event(Transfer { from, to, id });
         }
@@ -116,7 +116,7 @@ pub mod nft {
         }
     }
 
-    impl PayableMint for NftContract {}
+    impl PayableMint for nft_contract {}
 
     // ------------------- T E S T -----------------------------------------------------
     #[cfg(test)]
@@ -158,8 +158,8 @@ pub mod nft {
             assert_eq!(sh34.price(), PRICE);
         }
 
-        fn init() -> NftContract {
-            NftContract::new(
+        fn init() -> nft_contract {
+            nft_contract::new(
                 String::from("nft"),
                 String::from("nft"),
                 String::from(BASE_URI),
@@ -343,7 +343,7 @@ pub mod nft {
         #[ink::test]
         fn check_supply_overflow_ok() {
             let max_supply = u64::MAX - 1;
-            let mut sh34 = NftContract::new(
+            let mut sh34 = nft_contract::new(
                 String::from("nft"),
                 String::from("nft"),
                 String::from(BASE_URI),
@@ -369,10 +369,24 @@ pub mod nft {
         }
 
         #[ink::test]
+        fn check_hp() {
+            let accounts = default_accounts();
+            let mut sh34 = nft_contract::new(
+                String::from("nft"),
+                String::from("nft"),
+                String::from(BASE_URI),
+                100,
+                PRICE,
+            );
+            sh34.mint(accounts.bob, 10);
+            assert_eq!(sh34.hp(1), Some(1));
+        }
+
+        #[ink::test]
         fn check_value_overflow_ok() {
             let max_supply = u64::MAX;
             let price = u128::MAX as u128;
-            let sh34 = NftContract::new(
+            let sh34 = nft_contract::new(
                 String::from("nft"),
                 String::from("nft"),
                 String::from(BASE_URI),
