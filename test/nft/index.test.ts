@@ -1,7 +1,7 @@
 import { expect, use } from "chai";
 import chaiAsPromised from "chai-as-promised";
 import NftFactory from "./typedContract/constructors/nft";
-import Nft from "./typedContract/contracts/nft";
+import nft from "./typedContract/contracts/nft";
 import { ApiPromise, WsProvider, Keyring } from "@polkadot/api";
 import { KeyringPair } from "@polkadot/keyring/types";
 
@@ -17,7 +17,7 @@ describe("nft test", () => {
   let api: ApiPromise;
   let deployer: KeyringPair;
   
-  let contract: Nft;
+  let contract: nft;
   const initialState = true;
 
   before(async function setup(): Promise<void> {
@@ -26,8 +26,8 @@ describe("nft test", () => {
 
     nftFactory = new NftFactory(api, deployer);
 
-    contract = new Nft(
-      (await nftFactory.new(initialState)).address,
+    contract = new nft(
+      (await nftFactory.new(["nft"], ["nft"], ["nft.io"], 100, 1)).address,
       deployer,
       api
     );
@@ -38,16 +38,19 @@ describe("nft test", () => {
   });
 
   it("Sets the initial state", async () => {
-    expect((await contract.query.get()).value.ok).to.equal(initialState);
+    let result = await contract.withSigner(deployer).tx.mint("5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", 1);
+    console.log('Events:', result.events);
+    let balance = await contract.query.balanceOf("5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY");
+    console.log(balance);
   });
 
-  it("Can flip the state", async () => {
-    const { gasRequired } = await contract.withSigner(deployer).query.flip();
+  // it("Can flip the state", async () => {
+  //   const { gasRequired } = await contract.withSigner(deployer).query.flip();
 
-    await contract.withSigner(deployer).tx.flip({
-      gasLimit: gasRequired,
-    });
+  //   await contract.withSigner(deployer).tx.flip({
+  //     gasLimit: gasRequired,
+  //   });
 
-    await expect((await contract.query.get()).value.ok).to.be.equal(!initialState);
-  });
+  //   await expect((await contract.query.get()).value.ok).to.be.equal(!initialState);
+  // });
 });
