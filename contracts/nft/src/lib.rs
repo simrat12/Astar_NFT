@@ -78,7 +78,7 @@ pub mod nft {
             symbol: String,
             base_uri: String,
             max_supply: u64,
-            price_per_mint: Balance,
+            price_per_mint: Balance,  //likely need to change to u64
         ) -> Self {
             let mut instance = Self::default();
             instance._init_with_owner(instance.env().caller());

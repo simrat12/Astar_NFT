@@ -48,6 +48,7 @@ use openbrush::{
     },
 };
 
+
 pub trait Internal {
     /// Check if the transferred mint values is as expected
     fn check_value(&self, transferred_value: u128, mint_amount: u64) -> Result<(), PSP34Error>;
@@ -83,7 +84,8 @@ where
             self.data::<psp34::Data<enumerable::Balances>>()
                 ._mint_to(to, Id::U64(mint_id))?;
             self.data::<Data>().last_token_id += 1;
-            self.data::<Data>().hp.insert(mint_id, &100); //need to use sometine random, DIA oracles
+            let psyeudo_random_number = (mint_id * 16807) % 2147483647;
+            self.data::<Data>().hp.insert(mint_id, &psyeudo_random_number); //need to use sometine random, DIA oracles
         }
 
         Ok(())
@@ -154,11 +156,12 @@ where
         token_uri = token_uri + &token_id.to_string() + &PreludeString::from(".json");
         Ok(token_uri)
     }
+    
 
     default fn attack(&self, nft1_id: u64, nft2_id: u64) -> Option<AccountId> {
         let hp1 = self.hp(nft1_id);
         let hp2 = self.hp(nft2_id);
-
+    
         if hp1 > hp2 {
             Some(self.owner_of(Id::U64(nft1_id)).unwrap_or(AccountId::from([0x00; 32])))
         } else if hp2 > hp1 {
@@ -167,6 +170,7 @@ where
             None
         }
     }
+    
 
     /// Get max supply of tokens
     default fn max_supply(&self) -> u64 {

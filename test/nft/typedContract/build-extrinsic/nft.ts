@@ -21,19 +21,15 @@ export default class Methods {
 		this.__apiPromise = apiPromise;
 	}
 	/**
-	 * approve
+	 * ownerOf
 	 *
-	 * @param { ArgumentTypes.AccountId } operator,
-	 * @param { ArgumentTypes.Id | null } id,
-	 * @param { boolean } approved,
+	 * @param { ArgumentTypes.Id } id,
 	*/
-	"approve" (
-		operator: ArgumentTypes.AccountId,
-		id: ArgumentTypes.Id | null,
-		approved: boolean,
+	"ownerOf" (
+		id: ArgumentTypes.Id,
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "psp34::approve", [operator, id, approved], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "psp34::ownerOf", [id], __options);
 	}
 
 	/**
@@ -57,19 +53,31 @@ export default class Methods {
 	}
 
 	/**
-	 * allowance
+	 * approve
 	 *
-	 * @param { ArgumentTypes.AccountId } owner,
 	 * @param { ArgumentTypes.AccountId } operator,
 	 * @param { ArgumentTypes.Id | null } id,
+	 * @param { boolean } approved,
 	*/
-	"allowance" (
-		owner: ArgumentTypes.AccountId,
+	"approve" (
 		operator: ArgumentTypes.AccountId,
 		id: ArgumentTypes.Id | null,
+		approved: boolean,
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "psp34::allowance", [owner, operator, id], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "psp34::approve", [operator, id, approved], __options);
+	}
+
+	/**
+	 * balanceOf
+	 *
+	 * @param { ArgumentTypes.AccountId } owner,
+	*/
+	"balanceOf" (
+		owner: ArgumentTypes.AccountId,
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "psp34::balanceOf", [owner], __options);
 	}
 
 	/**
@@ -89,27 +97,19 @@ export default class Methods {
 	}
 
 	/**
-	 * balanceOf
+	 * allowance
 	 *
 	 * @param { ArgumentTypes.AccountId } owner,
+	 * @param { ArgumentTypes.AccountId } operator,
+	 * @param { ArgumentTypes.Id | null } id,
 	*/
-	"balanceOf" (
+	"allowance" (
 		owner: ArgumentTypes.AccountId,
+		operator: ArgumentTypes.AccountId,
+		id: ArgumentTypes.Id | null,
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "psp34::balanceOf", [owner], __options);
-	}
-
-	/**
-	 * ownerOf
-	 *
-	 * @param { ArgumentTypes.Id } id,
-	*/
-	"ownerOf" (
-		id: ArgumentTypes.Id,
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "psp34::ownerOf", [id], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "psp34::allowance", [owner, operator, id], __options);
 	}
 
 	/**
@@ -163,16 +163,6 @@ export default class Methods {
 	}
 
 	/**
-	 * renounceOwnership
-	 *
-	*/
-	"renounceOwnership" (
-		__options: GasLimit,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "ownable::renounceOwnership", [], __options);
-	}
-
-	/**
 	 * transferOwnership
 	 *
 	 * @param { ArgumentTypes.AccountId } newOwner,
@@ -182,6 +172,16 @@ export default class Methods {
 		__options: GasLimit,
 	){
 		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "ownable::transferOwnership", [newOwner], __options);
+	}
+
+	/**
+	 * renounceOwnership
+	 *
+	*/
+	"renounceOwnership" (
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "ownable::renounceOwnership", [], __options);
 	}
 
 	/**
@@ -195,27 +195,15 @@ export default class Methods {
 	}
 
 	/**
-	 * maxSupply
+	 * tokenUri
 	 *
+	 * @param { (number | string | BN) } tokenId,
 	*/
-	"maxSupply" (
+	"tokenUri" (
+		tokenId: (number | string | BN),
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "payableMint::maxSupply", [], __options);
-	}
-
-	/**
-	 * mint
-	 *
-	 * @param { ArgumentTypes.AccountId } to,
-	 * @param { (number | string | BN) } mintAmount,
-	*/
-	"mint" (
-		to: ArgumentTypes.AccountId,
-		mintAmount: (number | string | BN),
-		__options: GasLimitAndRequiredValue,
-	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "payableMint::mint", [to, mintAmount], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "payableMint::tokenUri", [tokenId], __options);
 	}
 
 	/**
@@ -249,15 +237,17 @@ export default class Methods {
 	}
 
 	/**
-	 * setMaxMintAmount
+	 * mint
 	 *
-	 * @param { (number | string | BN) } maxAmount,
+	 * @param { ArgumentTypes.AccountId } to,
+	 * @param { (number | string | BN) } mintAmount,
 	*/
-	"setMaxMintAmount" (
-		maxAmount: (number | string | BN),
-		__options: GasLimit,
+	"mint" (
+		to: ArgumentTypes.AccountId,
+		mintAmount: (number | string | BN),
+		__options: GasLimitAndRequiredValue,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "payableMint::setMaxMintAmount", [maxAmount], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "payableMint::mint", [to, mintAmount], __options);
 	}
 
 	/**
@@ -273,27 +263,25 @@ export default class Methods {
 	}
 
 	/**
-	 * tokenUri
+	 * setMaxMintAmount
 	 *
-	 * @param { (number | string | BN) } tokenId,
+	 * @param { (number | string | BN) } maxAmount,
 	*/
-	"tokenUri" (
-		tokenId: (number | string | BN),
+	"setMaxMintAmount" (
+		maxAmount: (number | string | BN),
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "payableMint::tokenUri", [tokenId], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "payableMint::setMaxMintAmount", [maxAmount], __options);
 	}
 
 	/**
-	 * hp
+	 * maxSupply
 	 *
-	 * @param { (number | string | BN) } tokenId,
 	*/
-	"hp" (
-		tokenId: (number | string | BN),
+	"maxSupply" (
 		__options: GasLimit,
 	){
-		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "payableMint::hp", [tokenId], __options);
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "payableMint::maxSupply", [], __options);
 	}
 
 	/**
@@ -308,6 +296,18 @@ export default class Methods {
 		__options: GasLimit,
 	){
 		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "payableMint::attack", [nft1Id, nft2Id], __options);
+	}
+
+	/**
+	 * hp
+	 *
+	 * @param { (number | string | BN) } tokenId,
+	*/
+	"hp" (
+		tokenId: (number | string | BN),
+		__options: GasLimit,
+	){
+		return buildSubmittableExtrinsic( this.__apiPromise, this.__nativeContract, "payableMint::hp", [tokenId], __options);
 	}
 
 }

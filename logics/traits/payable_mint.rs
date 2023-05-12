@@ -7,6 +7,7 @@ use openbrush::{
     },
 };
 
+
 #[openbrush::wrapper]
 pub type PayableMintRef = dyn PayableMint;
 
@@ -53,4 +54,5 @@ pub trait PayableMint {
 
     #[ink(message)]
     fn attack(&self, nft1_id: u64, nft2_id: u64) -> Option<AccountId>;   //need to use different datat type
+
 }
